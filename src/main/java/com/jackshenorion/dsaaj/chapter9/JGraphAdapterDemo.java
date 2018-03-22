@@ -8,7 +8,7 @@ import javax.swing.*;
 import org.jgraph.*;
 import org.jgraph.graph.*;
 import org.jgrapht.*;
-import org.jgrapht.ext.*;
+import org.jgrapht.ext.JGraphModelAdapter;
 import org.jgrapht.graph.*;
 // resolve ambiguity
 import org.jgrapht.graph.DefaultEdge;
