@@ -1,5 +1,6 @@
-package com.jackshenorion.dsaaj.chapter9;
+package com.jackshenorion.dsaaj.graph;
 
+import com.jackshenorion.dsaaj.graph.intf.IGraph;
 import org.jgrapht.graph.DirectedMultigraph;
 
 public class MyJGraphTAdapter<V, E> extends DirectedMultigraph<V, E> {

@@ -1,4 +1,4 @@
-package com.jackshenorion.dsaaj.chapter9;
+package com.jackshenorion.dsaaj.graph;
 
 import org.jgrapht.Graph;
 import org.jgrapht.graph.DefaultDirectedGraph;

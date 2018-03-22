@@ -1,8 +1,6 @@
-package com.jackshenorion.dsaaj.chapter9;
+package com.jackshenorion.dsaaj.graph.intf;
 
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 
 public interface IGraph<V, E> {

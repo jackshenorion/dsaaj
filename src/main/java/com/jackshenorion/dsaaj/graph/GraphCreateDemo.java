@@ -1,5 +1,7 @@
-package com.jackshenorion.dsaaj.chapter9;
+package com.jackshenorion.dsaaj.graph;
 
+import com.jackshenorion.dsaaj.graph.intf.IGraph;
+import com.jackshenorion.dsaaj.graph.descgraph.AdjacentMatrixGraph;
 import org.jgraph.JGraph;
 import org.jgraph.graph.AttributeMap;
 import org.jgraph.graph.DefaultGraphCell;

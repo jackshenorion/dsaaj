@@ -1,10 +1,11 @@
-package com.jackshenorion.dsaaj.chapter9;
+package com.jackshenorion.dsaaj.graph.descgraph;
 
 import com.google.common.collect.Lists;
+import com.jackshenorion.dsaaj.graph.intf.IGraph;
 
 import java.util.*;
 
-public class AdjacentMatrixGraph<V, E> implements IGraph<V, E>, IGraphIterator {
+public class AdjacentMatrixGraph<V, E> implements IGraph<V, E> {
     private Object[][] adjacentMatrix;
     private List<V> vertexes;
     private Map<V, Integer> vertexIndexes;
