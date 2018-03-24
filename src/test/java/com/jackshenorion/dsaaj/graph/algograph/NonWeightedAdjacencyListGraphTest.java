@@ -4,11 +4,11 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-public class NoWeightAdjacencyListGraphTest {
+public class NonWeightedAdjacencyListGraphTest {
     @Test
     public void getInOutDegree() throws Exception {
 
-        NoWeightAdjacencyListGraph<String> graph = new NoWeightAdjacencyListGraph();
+        NonWeightedAdjacencyListGraph<String> graph = new NonWeightedAdjacencyListGraph();
         String v1 = "A";
         String v2 = "B";
         String v3 = "C";

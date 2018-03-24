@@ -5,12 +5,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class NoWeightAdjacencyListGraph<V> implements INoWeightAlgoGraph<V>, IDirectedGraphAlgorithm<V> {
+public class NonWeightedAdjacencyListGraph<V> implements INonWeightedAlgoGraph<V>, IDirectedGraphAlgorithm<V> {
     private static final int DEFAULT_ADJACENCY_LIST_LEN = 1;
 
     private Map<V, List<V>> adjacencyLists;
 
-    public NoWeightAdjacencyListGraph() {
+    public NonWeightedAdjacencyListGraph() {
         adjacencyLists = new HashMap<>();
     }
 
