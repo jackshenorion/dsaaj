@@ -4,11 +4,10 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-public class NonWeightedAdjacencyListGraphTest {
+public class NonWeightedAdjacencyMatrixGraphTest {
     @Test
     public void getInOutDegree() throws Exception {
-
-        NonWeightedAdjacencyListGraph<String> graph = new NonWeightedAdjacencyListGraph();
+        NonWeightedAdjacencyMatrixGraph<String> graph = new NonWeightedAdjacencyMatrixGraph<>(3);
         String v1 = "A";
         String v2 = "B";
         String v3 = "C";
@@ -23,6 +22,7 @@ public class NonWeightedAdjacencyListGraphTest {
         assertEquals(1, graph.getInDegree(v1));
         assertEquals(2, graph.getInDegree(v2));
         assertEquals(1, graph.getInDegree(v3));
+
         assertEquals(2, graph.getOutDegree(v1));
         assertEquals(1, graph.getOutDegree(v2));
         assertEquals(1, graph.getOutDegree(v3));
@@ -31,7 +31,7 @@ public class NonWeightedAdjacencyListGraphTest {
     @Test
     public void getInverseGraph() {
 
-        NonWeightedAdjacencyListGraph<String> graph = new NonWeightedAdjacencyListGraph();
+        NonWeightedAdjacencyMatrixGraph<String> graph = new NonWeightedAdjacencyMatrixGraph<>(3);
         String v1 = "A";
         String v2 = "B";
         String v3 = "C";
@@ -43,7 +43,7 @@ public class NonWeightedAdjacencyListGraphTest {
         graph.addEdge(v2, v1);
         graph.addEdge(v3, v2);
 
-        NonWeightedAdjacencyListGraph<String> invertedGraph = graph.invert();
+        NonWeightedAdjacencyMatrixGraph<String> invertedGraph = graph.invert();
 
         assertTrue(invertedGraph.hasVertex(v1));
         assertTrue(invertedGraph.hasVertex(v2));
@@ -55,5 +55,4 @@ public class NonWeightedAdjacencyListGraphTest {
         assertTrue(!invertedGraph.hasEdge(v1, v3));
         assertTrue(!invertedGraph.hasEdge(v3, v2));
     }
-
 }

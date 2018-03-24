@@ -42,4 +42,32 @@ public class NonWeightedAdjacencyListGraph<V> implements INonWeightedAlgoGraph<V
     public int getOutDegree(V v) {
         return adjacencyLists.get(v).size();
     }
+
+    public boolean hasVertex(V v) {
+        return adjacencyLists.containsKey(v);
+    }
+
+    public boolean hasEdge(V source, V target) {
+        return adjacencyLists.containsKey(source) && adjacencyLists.get(source).contains(target);
+    }
+
+    public NonWeightedAdjacencyListGraph<V> invert() {
+        NonWeightedAdjacencyListGraph<V> invertedGraph = new NonWeightedAdjacencyListGraph<>();
+        for (V v : adjacencyLists.keySet()) {
+            invertedGraph.addVertex(v);
+        }
+        for (Map.Entry<V, List<V>> entry : adjacencyLists.entrySet()) {
+            for (V newSource : entry.getValue()) {
+                invertedGraph.addEdge(newSource, entry.getKey());
+            }
+        }
+        return invertedGraph;
+    }
+
+    @Override
+    public String toString() {
+        return "NonWeightedAdjacencyListGraph{" +
+                "adjacencyLists=" + adjacencyLists +
+                '}';
+    }
 }
