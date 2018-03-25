@@ -96,6 +96,23 @@ public class NonWeightedAdjacencyMatrixGraph<V> implements IDirectedGraphAlgorit
         return squareGraph;
     }
 
+    /*22.1-6*/
+    public boolean hasUniversalSink() {
+        int i = 0;
+        int j = 1;
+        while (j < vertexToIndexMap.size()) {
+            i = hasEdge(i, j) ? j : i; // winner is the target which probably is sinker
+            j = j + 1; // next
+        }
+        int winner = i;
+        for (int k = 0; k < vertexToIndexMap.size(); k++) {
+            if (winner != k && (adjacencyMatrix[k][winner] == 0 || adjacencyMatrix[winner][k] > 0)) {
+                return false; // real sinker should be all vertices' target and should not be anyone's source
+            }
+        }
+        return true;
+    }
+
     private boolean hasEdge(int sourceIndex, int targetIndex) {
         return adjacencyMatrix[sourceIndex][targetIndex] > 0;
     }

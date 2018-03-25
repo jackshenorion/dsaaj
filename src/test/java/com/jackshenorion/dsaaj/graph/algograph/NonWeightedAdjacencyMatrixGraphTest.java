@@ -84,4 +84,43 @@ public class NonWeightedAdjacencyMatrixGraphTest {
         assertTrue(!squareGraph.hasEdge(v3, v2));
     }
 
+    @Test
+    public void testHasUniversalSink() {
+        NonWeightedAdjacencyMatrixGraph<String> graph = new NonWeightedAdjacencyMatrixGraph(10);
+        String v1 = "A";
+        String v2 = "B";
+        String v3 = "C";
+        String v4 = "D";
+        graph.addVertex(v1);
+        graph.addVertex(v2);
+        graph.addVertex(v3);
+        graph.addVertex(v4);
+        graph.addEdge(v1, v2);
+        graph.addEdge(v3, v2);
+        graph.addEdge(v4, v2);
+        graph.addEdge(v1, v3);
+        graph.addEdge(v4, v3);
+
+        assertTrue(graph.hasUniversalSink());
+    }
+
+    @Test
+    public void testHasNoUniversalSink() {
+        NonWeightedAdjacencyMatrixGraph<String> graph = new NonWeightedAdjacencyMatrixGraph(10);
+        String v1 = "A";
+        String v2 = "B";
+        String v3 = "C";
+        String v4 = "D";
+        graph.addVertex(v1);
+        graph.addVertex(v2);
+        graph.addVertex(v3);
+        graph.addVertex(v4);
+        graph.addEdge(v1, v3);
+        graph.addEdge(v2, v3);
+        graph.addEdge(v4, v3);
+        graph.addEdge(v3, v2);
+        graph.addEdge(v1, v2);
+
+        assertFalse(graph.hasUniversalSink());
+    }
 }
