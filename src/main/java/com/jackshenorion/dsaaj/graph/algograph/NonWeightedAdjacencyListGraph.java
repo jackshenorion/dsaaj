@@ -64,6 +64,24 @@ public class NonWeightedAdjacencyListGraph<V> implements INonWeightedAlgoGraph<V
         return invertedGraph;
     }
 
+    /*22.1-5*/
+    public NonWeightedAdjacencyListGraph<V> square() {
+        NonWeightedAdjacencyListGraph<V> squareGraph = new NonWeightedAdjacencyListGraph<>();
+        for (V v : adjacencyLists.keySet()) {
+            squareGraph.addVertex(v);
+        }
+        for (Map.Entry<V, List<V>> entry : adjacencyLists.entrySet()) {
+            for (V middleVertex : entry.getValue()) {
+                for (V target : adjacencyLists.get(middleVertex)) {
+                    if (entry.getKey() != target) {
+                        squareGraph.addEdge(entry.getKey(), target);
+                    }
+                }
+            }
+        }
+        return squareGraph;
+    }
+
     @Override
     public String toString() {
         return "NonWeightedAdjacencyListGraph{" +

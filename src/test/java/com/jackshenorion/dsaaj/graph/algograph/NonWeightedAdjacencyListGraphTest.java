@@ -56,4 +56,32 @@ public class NonWeightedAdjacencyListGraphTest {
         assertTrue(!invertedGraph.hasEdge(v3, v2));
     }
 
+    @Test
+    public void testSquareGraph() {
+        NonWeightedAdjacencyListGraph<String> graph = new NonWeightedAdjacencyListGraph();
+        String v1 = "A";
+        String v2 = "B";
+        String v3 = "C";
+        graph.addVertex(v1);
+        graph.addVertex(v2);
+        graph.addVertex(v3);
+        graph.addEdge(v1, v2);
+        graph.addEdge(v1, v3);
+        graph.addEdge(v2, v1);
+        graph.addEdge(v3, v2);
+
+        NonWeightedAdjacencyListGraph<String> squareGraph = graph.square();
+
+        assertTrue(squareGraph.hasVertex(v1));
+        assertTrue(squareGraph.hasVertex(v2));
+        assertTrue(squareGraph.hasVertex(v3));
+        assertTrue(squareGraph.hasEdge(v1, v2));
+        assertTrue(squareGraph.hasEdge(v3, v1));
+        assertTrue(squareGraph.hasEdge(v2, v3));
+        assertTrue(!squareGraph.hasEdge(v1, v3));
+        assertTrue(!squareGraph.hasEdge(v3, v2));
+        assertTrue(!squareGraph.hasEdge(v2, v1));
+        assertTrue(!squareGraph.hasEdge(v3, v2));
+    }
+
 }
