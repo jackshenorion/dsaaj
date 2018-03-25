@@ -1,18 +1,10 @@
 package com.jackshenorion.dsaaj.graph.intf;
 
-import java.util.List;
-import java.util.Set;
+import java.util.Collection;
 
-public interface IGraph<V, E> {
+public interface IGraph<V> {
     void addVertex(V v);
-
-    void addEdge(V source, V target, E edge);
-
-    List<V> getAllVertexes();
-
-    Set<E> getAllEdges();
-
-    V getEdgeSource(E e);
-
-    V getEdgeTarget(E e);
+    void addEdge(V source, V target, double weight);
+    Collection<V> getAllVertexes();
+    Collection<IEdge<V>> getAllEdges();
 }

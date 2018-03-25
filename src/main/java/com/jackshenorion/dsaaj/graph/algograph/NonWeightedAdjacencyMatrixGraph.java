@@ -1,9 +1,12 @@
 package com.jackshenorion.dsaaj.graph.algograph;
 
-import java.util.HashMap;
-import java.util.Map;
+import com.jackshenorion.dsaaj.graph.edge.DefaultEdge;
+import com.jackshenorion.dsaaj.graph.intf.IEdge;
+import com.jackshenorion.dsaaj.graph.intf.IGraph;
 
-public class NonWeightedAdjacencyMatrixGraph<V> implements IDirectedGraphAlgorithm<V>, INonWeightedAlgoGraph<V> {
+import java.util.*;
+
+public class NonWeightedAdjacencyMatrixGraph<V> implements IDirectedGraphAlgorithm<V>, IGraph<V> {
     private int[][] adjacencyMatrix;
     private Map<V, Integer> vertexToIndexMap;
     private Object[] indexToVertex;
@@ -21,9 +24,31 @@ public class NonWeightedAdjacencyMatrixGraph<V> implements IDirectedGraphAlgorit
         indexToVertex[index] = v;
     }
 
-    @Override
     public void addEdge(V source, V target) {
         adjacencyMatrix[vertexToIndexMap.get(source)][vertexToIndexMap.get(target)] = 1;
+    }
+
+    @Override
+    public void addEdge(V source, V target, double weight) {
+        addEdge(source, target);
+    }
+
+    @Override
+    public Collection<V> getAllVertexes() {
+        return new ArrayList<>(vertexToIndexMap.keySet());
+    }
+
+    @Override
+    public Collection<IEdge<V>> getAllEdges() {
+        List<IEdge<V>> edges = new ArrayList<>();
+        for (int i = 0; i < vertexToIndexMap.size(); i++) {
+            for (int j = 0; j < vertexToIndexMap.size(); j++) {
+                if ( adjacencyMatrix[i][j] > 0) {
+                    edges.add(new DefaultEdge<V>((V)indexToVertex[i], (V)indexToVertex[j]));
+                }
+            }
+        }
+        return edges;
     }
 
     @Override

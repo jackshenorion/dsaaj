@@ -1,11 +1,12 @@
 package com.jackshenorion.dsaaj.graph.algograph;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import com.jackshenorion.dsaaj.graph.edge.DefaultEdge;
+import com.jackshenorion.dsaaj.graph.intf.IEdge;
+import com.jackshenorion.dsaaj.graph.intf.IGraph;
 
-public class NonWeightedAdjacencyListGraph<V> implements INonWeightedAlgoGraph<V>, IDirectedGraphAlgorithm<V> {
+import java.util.*;
+
+public class NonWeightedAdjacencyListGraph<V> implements IGraph<V>, IDirectedGraphAlgorithm<V> {
     private static final int DEFAULT_ADJACENCY_LIST_LEN = 1;
 
     private Map<V, List<V>> adjacencyLists;
@@ -19,10 +20,33 @@ public class NonWeightedAdjacencyListGraph<V> implements INonWeightedAlgoGraph<V
         adjacencyLists.put(v, new ArrayList<>(DEFAULT_ADJACENCY_LIST_LEN));
     }
 
-    @Override
+
     public void addEdge(V source, V target) {
         assert adjacencyLists.containsKey(source);
         adjacencyLists.get(source).add(target);
+    }
+
+    @Override
+    public void addEdge(V source, V target, double weight) {
+        assert adjacencyLists.containsKey(source);
+        adjacencyLists.get(source).add(target);
+    }
+
+    @Override
+    public Collection<V> getAllVertexes() {
+        return new ArrayList<>(adjacencyLists.keySet());
+    }
+
+    @Override
+    public Collection<IEdge<V>> getAllEdges() {
+        List<IEdge<V>> edges = new ArrayList<>();
+        for (Map.Entry<V, List<V>> entry: adjacencyLists.entrySet()) {
+            V source = entry.getKey();
+            for (V target : entry.getValue()) {
+                edges.add(new DefaultEdge<>(source, target));
+            }
+        }
+        return edges;
     }
 
     @Override
