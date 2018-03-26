@@ -6,7 +6,6 @@ import com.jackshenorion.dsaaj.graph.intf.IGraph;
 
 import java.util.*;
 import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 
 public class NonWeightedAdjacencyListGraph<V> implements IGraph<V>, IDirectedGraphAlgorithm<V> {
     private static final int DEFAULT_ADJACENCY_LIST_LEN = 1;
