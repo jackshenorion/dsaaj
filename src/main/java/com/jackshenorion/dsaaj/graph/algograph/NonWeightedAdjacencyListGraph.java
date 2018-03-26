@@ -5,6 +5,8 @@ import com.jackshenorion.dsaaj.graph.intf.IEdge;
 import com.jackshenorion.dsaaj.graph.intf.IGraph;
 
 import java.util.*;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
 public class NonWeightedAdjacencyListGraph<V> implements IGraph<V>, IDirectedGraphAlgorithm<V> {
     private static final int DEFAULT_ADJACENCY_LIST_LEN = 1;
@@ -40,7 +42,7 @@ public class NonWeightedAdjacencyListGraph<V> implements IGraph<V>, IDirectedGra
     @Override
     public Collection<IEdge<V>> getAllEdges() {
         List<IEdge<V>> edges = new ArrayList<>();
-        for (Map.Entry<V, List<V>> entry: adjacencyLists.entrySet()) {
+        for (Map.Entry<V, List<V>> entry : adjacencyLists.entrySet()) {
             V source = entry.getKey();
             for (V target : entry.getValue()) {
                 edges.add(new DefaultEdge<>(source, target));
@@ -104,6 +106,26 @@ public class NonWeightedAdjacencyListGraph<V> implements IGraph<V>, IDirectedGra
             }
         }
         return squareGraph;
+    }
+
+    /*BFS*/
+    public void bfs(V root, BiConsumer<V, Integer> onVertex) {
+        Queue<V> queue = new LinkedList<>();
+        Map<V, Integer> foundVertices = new HashMap<>();
+        queue.add(root);
+        foundVertices.put(root, 0);
+        onVertex.accept(root, 0);
+        while (queue.size() > 0) {
+            V u = queue.poll();
+            int k = foundVertices.get(u);
+            for (V v : adjacencyLists.get(u)) {
+                if (!foundVertices.containsKey(v)) {
+                    queue.add(v);
+                    foundVertices.put(v, k + 1);
+                    onVertex.accept(v, k + 1);
+                }
+            }
+        }
     }
 
     @Override
