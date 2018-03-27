@@ -5,19 +5,19 @@ import com.jackshenorion.dsaaj.graph.intf.IEdge;
 import com.jackshenorion.dsaaj.graph.intf.IGraph;
 
 import java.util.*;
-import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
-public class NonWeightedAdjacencyListGraph<V> implements IGraph<V>, IDirectedGraphAlgorithm<V> {
+public class NonWeightedAdjacencyListGraph<V>
+        extends AbstractGraphAlgorithm<V>
+        implements IDirectedGraphAlgorithm<V> {
+
     private static final int DEFAULT_ADJACENCY_LIST_LEN = 1;
 
     private List<List<Integer>> adjacencyLists;
-    private Map<V, Integer> vertexToIndex;
-    private List<V> indexToVertex;
 
     public NonWeightedAdjacencyListGraph() {
+        super();
         adjacencyLists = new ArrayList<>();
-        vertexToIndex = new HashMap<>();
-        indexToVertex = new ArrayList<>();
     }
 
     @Override
@@ -113,24 +113,10 @@ public class NonWeightedAdjacencyListGraph<V> implements IGraph<V>, IDirectedGra
         return squareGraph;
     }
 
-    /*BFS*/
-    public void bfs(V root, BiConsumer<V, Integer> onVertex) {
-        Queue<Integer> queue = new LinkedList<>();
-        Map<Integer, Integer> foundVertices = new HashMap<>();
-        int rootIndex = vertexToIndex.get(root);
-        queue.add(rootIndex);
-        foundVertices.put(rootIndex, 0);
-        onVertex.accept(root, 0);
-        while (queue.size() > 0) {
-            int uIndex = queue.poll();
-            int k = foundVertices.get(uIndex);
-            for (int vIndex : adjacencyLists.get(uIndex)) {
-                if (!foundVertices.containsKey(vIndex)) {
-                    queue.add(vIndex);
-                    foundVertices.put(vIndex, k + 1);
-                    onVertex.accept(indexToVertex.get(vIndex), k + 1);
-                }
-            }
+    @Override
+    protected void forEachAdjacentVertex(int uIndex, Consumer<Integer> adjacentVertexConsumer) {
+        for (int vIndex : adjacencyLists.get(uIndex)) {
+            adjacentVertexConsumer.accept(vIndex);
         }
     }
 
