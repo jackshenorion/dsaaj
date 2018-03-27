@@ -114,23 +114,67 @@ public class NonWeightedAdjacencyListGraph<V> implements IGraph<V>, IDirectedGra
     }
 
     /*BFS*/
-    public void bfs(V root, BiConsumer<V, Integer> onVertex) {
-        Queue<Integer> queue = new LinkedList<>();
-        Map<Integer, Integer> foundVertices = new HashMap<>();
+    public GraphTraverseInfo bfs(V root, BiConsumer<V, Integer> onVertex) {
+
         int rootIndex = vertexToIndex.get(root);
+
+        int vCount = indexToVertex.size();
+        int[] colors = new int[vCount]; // 0: white; 1: grey; 2: black
+        int[] parents = new int[vCount];
+        int[] distances = new int[vCount];
+
+        for (int i = 0; i < vCount; i++) {
+            colors[i] = 0;
+            parents[i] = -1;
+            distances[i] = Integer.MAX_VALUE;
+        }
+
+        Queue<Integer> queue = new LinkedList<>();
+
         queue.add(rootIndex);
-        foundVertices.put(rootIndex, 0);
+        colors[rootIndex] = 1;
+        distances[rootIndex] = 0;
         onVertex.accept(root, 0);
+
         while (queue.size() > 0) {
             int uIndex = queue.poll();
-            int k = foundVertices.get(uIndex);
+            int k = distances[uIndex];
             for (int vIndex : adjacencyLists.get(uIndex)) {
-                if (!foundVertices.containsKey(vIndex)) {
+                if (colors[vIndex] == 0) {
                     queue.add(vIndex);
-                    foundVertices.put(vIndex, k + 1);
+                    colors[vIndex] = 1;
+                    distances[vIndex] = k + 1;
+                    parents[vIndex] = uIndex;
                     onVertex.accept(indexToVertex.get(vIndex), k + 1);
                 }
             }
+            colors[uIndex] = 2;
+        }
+
+        return new GraphTraverseInfo(colors, parents, distances);
+    }
+
+    public static class GraphTraverseInfo {
+        private int[] colors; // 0: white; 1: grey; 2: black
+        private int[] parents;
+        private int[] distances;
+
+        public GraphTraverseInfo(int[] colors, int[] parents, int[] distances) {
+            this.colors = colors;
+            this.parents = parents;
+            this.distances = distances;
+        }
+
+        public int[] getColors() {
+            return colors;
+        }
+
+        public int[] getParents() {
+            return parents;
+        }
+
+        public int[] getDistances() {
+            return distances;
         }
     }
 
