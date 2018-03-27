@@ -57,7 +57,7 @@ public abstract class AbstractGraphAlgorithm<V> implements IGraph<V> {
             });
             colors[uIndex] = 2;
         }
-        return new NonWeightedAdjacencyListGraph.GraphTraverseInfo(colors, parents, distances);
+        return new GraphTraverseInfo(colors, parents, distances);
     }
 
     abstract protected void forEachAdjacentVertex(int uIndex, Consumer<Integer> adjacentVertexConsumer);
