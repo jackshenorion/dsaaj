@@ -5,19 +5,19 @@ import com.jackshenorion.dsaaj.graph.intf.IEdge;
 import com.jackshenorion.dsaaj.graph.intf.IGraph;
 
 import java.util.*;
-import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
-public class NonWeightedAdjacencyListGraph<V> implements IGraph<V>, IDirectedGraphAlgorithm<V> {
+public class NonWeightedAdjacencyListGraph<V>
+        extends AbstractGraphAlgorithm<V>
+        implements IDirectedGraphAlgorithm<V> {
+
     private static final int DEFAULT_ADJACENCY_LIST_LEN = 1;
 
     private List<List<Integer>> adjacencyLists;
-    private Map<V, Integer> vertexToIndex;
-    private List<V> indexToVertex;
 
     public NonWeightedAdjacencyListGraph() {
+        super();
         adjacencyLists = new ArrayList<>();
-        vertexToIndex = new HashMap<>();
-        indexToVertex = new ArrayList<>();
     }
 
     @Override
@@ -113,68 +113,10 @@ public class NonWeightedAdjacencyListGraph<V> implements IGraph<V>, IDirectedGra
         return squareGraph;
     }
 
-    /*BFS*/
-    public GraphTraverseInfo bfs(V root, BiConsumer<V, Integer> onVertex) {
-
-        int rootIndex = vertexToIndex.get(root);
-
-        int vCount = indexToVertex.size();
-        int[] colors = new int[vCount]; // 0: white; 1: grey; 2: black
-        int[] parents = new int[vCount];
-        int[] distances = new int[vCount];
-
-        for (int i = 0; i < vCount; i++) {
-            colors[i] = 0;
-            parents[i] = -1;
-            distances[i] = Integer.MAX_VALUE;
-        }
-
-        Queue<Integer> queue = new LinkedList<>();
-
-        queue.add(rootIndex);
-        colors[rootIndex] = 1;
-        distances[rootIndex] = 0;
-        onVertex.accept(root, 0);
-
-        while (queue.size() > 0) {
-            int uIndex = queue.poll();
-            int k = distances[uIndex];
-            for (int vIndex : adjacencyLists.get(uIndex)) {
-                if (colors[vIndex] == 0) {
-                    queue.add(vIndex);
-                    colors[vIndex] = 1;
-                    distances[vIndex] = k + 1;
-                    parents[vIndex] = uIndex;
-                    onVertex.accept(indexToVertex.get(vIndex), k + 1);
-                }
-            }
-            colors[uIndex] = 2;
-        }
-
-        return new GraphTraverseInfo(colors, parents, distances);
-    }
-
-    public static class GraphTraverseInfo {
-        private int[] colors; // 0: white; 1: grey; 2: black
-        private int[] parents;
-        private int[] distances;
-
-        public GraphTraverseInfo(int[] colors, int[] parents, int[] distances) {
-            this.colors = colors;
-            this.parents = parents;
-            this.distances = distances;
-        }
-
-        public int[] getColors() {
-            return colors;
-        }
-
-        public int[] getParents() {
-            return parents;
-        }
-
-        public int[] getDistances() {
-            return distances;
+    @Override
+    protected void forEachAdjacentVertex(int uIndex, Consumer<Integer> adjacentVertexConsumer) {
+        for (int vIndex : adjacencyLists.get(uIndex)) {
+            adjacentVertexConsumer.accept(vIndex);
         }
     }
 

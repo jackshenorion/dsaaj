@@ -2,30 +2,29 @@ package com.jackshenorion.dsaaj.graph.algograph;
 
 import com.jackshenorion.dsaaj.graph.edge.DefaultEdge;
 import com.jackshenorion.dsaaj.graph.intf.IEdge;
-import com.jackshenorion.dsaaj.graph.intf.IGraph;
 
 import java.util.*;
+import java.util.function.Consumer;
 
-public class NonWeightedAdjacencyMatrixGraph<V> implements IDirectedGraphAlgorithm<V>, IGraph<V> {
+public class NonWeightedAdjacencyMatrixGraph<V>
+        extends AbstractGraphAlgorithm<V>
+        implements IDirectedGraphAlgorithm<V> {
+
     private int[][] adjacencyMatrix;
-    private Map<V, Integer> vertexToIndexMap;
-    private Object[] indexToVertex;
 
     public NonWeightedAdjacencyMatrixGraph(int maxVertexCount) {
         adjacencyMatrix = new int[maxVertexCount][maxVertexCount];
-        vertexToIndexMap = new HashMap<>();
-        indexToVertex = new Object[maxVertexCount];
     }
 
     @Override
     public void addVertex(V v) {
-        int index = vertexToIndexMap.size();
-        vertexToIndexMap.put(v, index);
-        indexToVertex[index] = v;
+        int newIndex = vertexToIndex.size();
+        vertexToIndex.put(v, newIndex);
+        indexToVertex.add(v);
     }
 
     public void addEdge(V source, V target) {
-        adjacencyMatrix[vertexToIndexMap.get(source)][vertexToIndexMap.get(target)] = 1;
+        adjacencyMatrix[vertexToIndex.get(source)][vertexToIndex.get(target)] = 1;
     }
 
     @Override
@@ -35,16 +34,16 @@ public class NonWeightedAdjacencyMatrixGraph<V> implements IDirectedGraphAlgorit
 
     @Override
     public Collection<V> getAllVertexes() {
-        return new ArrayList<>(vertexToIndexMap.keySet());
+        return new ArrayList<>(vertexToIndex.keySet());
     }
 
     @Override
     public Collection<IEdge<V>> getAllEdges() {
         List<IEdge<V>> edges = new ArrayList<>();
-        for (int i = 0; i < vertexToIndexMap.size(); i++) {
-            for (int j = 0; j < vertexToIndexMap.size(); j++) {
+        for (int i = 0; i < vertexToIndex.size(); i++) {
+            for (int j = 0; j < vertexToIndex.size(); j++) {
                 if ( adjacencyMatrix[i][j] > 0) {
-                    edges.add(new DefaultEdge<V>((V)indexToVertex[i], (V)indexToVertex[j]));
+                    edges.add(new DefaultEdge<V>((V)indexToVertex.get(i), (V)indexToVertex.get(j)));
                 }
             }
         }
@@ -54,8 +53,8 @@ public class NonWeightedAdjacencyMatrixGraph<V> implements IDirectedGraphAlgorit
     @Override
     public int getInDegree(V v) {
         int result = 0;
-        int vIndex = vertexToIndexMap.get(v);
-        for (int i = 0; i < vertexToIndexMap.size(); i++) {
+        int vIndex = vertexToIndex.get(v);
+        for (int i = 0; i < vertexToIndex.size(); i++) {
             if (adjacencyMatrix[i][vIndex] > 0) {
                 result++;
             }
@@ -66,8 +65,8 @@ public class NonWeightedAdjacencyMatrixGraph<V> implements IDirectedGraphAlgorit
     @Override
     public int getOutDegree(V v) {
         int result = 0;
-        int vIndex = vertexToIndexMap.get(v);
-        for (int i = 0; i < vertexToIndexMap.size(); i++) {
+        int vIndex = vertexToIndex.get(v);
+        for (int i = 0; i < vertexToIndex.size(); i++) {
             if (adjacencyMatrix[vIndex][i] > 0) {
                 result++;
             }
@@ -76,25 +75,25 @@ public class NonWeightedAdjacencyMatrixGraph<V> implements IDirectedGraphAlgorit
     }
 
     public boolean hasVertex(V v) {
-        return vertexToIndexMap.containsKey(v);
+        return vertexToIndex.containsKey(v);
     }
 
     public boolean hasEdge(V source, V target) {
-        return vertexToIndexMap.containsKey(source)
-                && vertexToIndexMap.containsKey(target)
-                && adjacencyMatrix[vertexToIndexMap.get(source)][vertexToIndexMap.get(target)] > 0;
+        return vertexToIndex.containsKey(source)
+                && vertexToIndex.containsKey(target)
+                && adjacencyMatrix[vertexToIndex.get(source)][vertexToIndex.get(target)] > 0;
     }
 
     public NonWeightedAdjacencyMatrixGraph<V> invert() {
         NonWeightedAdjacencyMatrixGraph<V> invertedGraph = new NonWeightedAdjacencyMatrixGraph<>(adjacencyMatrix.length);
-        int vertexCount = vertexToIndexMap.size();
-        for (Map.Entry<V, Integer> entry : vertexToIndexMap.entrySet()) {
+        int vertexCount = vertexToIndex.size();
+        for (Map.Entry<V, Integer> entry : vertexToIndex.entrySet()) {
             invertedGraph.addVertex(entry.getKey());
         }
         for (int i = 0; i < vertexCount; i++) {
             for (int j = 0; j < vertexCount; j++) {
                 if (hasEdge(i, j)) {
-                    invertedGraph.addEdge((V) indexToVertex[j], (V) indexToVertex[i]);
+                    invertedGraph.addEdge((V) indexToVertex.get(j), (V) indexToVertex.get(i));
                 }
             }
         }
@@ -104,15 +103,15 @@ public class NonWeightedAdjacencyMatrixGraph<V> implements IDirectedGraphAlgorit
     /*22.1-5*/
     public NonWeightedAdjacencyMatrixGraph<V> square() {
         NonWeightedAdjacencyMatrixGraph<V> squareGraph = new NonWeightedAdjacencyMatrixGraph<>(adjacencyMatrix.length);
-        for (V v : vertexToIndexMap.keySet()) {
+        for (V v : vertexToIndex.keySet()) {
             squareGraph.addVertex(v);
         }
-        for (int i = 0; i < vertexToIndexMap.size(); i++) {
-            for (int j = 0; j < vertexToIndexMap.size(); j++) {
+        for (int i = 0; i < vertexToIndex.size(); i++) {
+            for (int j = 0; j < vertexToIndex.size(); j++) {
                 if (hasEdge(i, j)) {
-                    for (int k = 0; k < vertexToIndexMap.size(); k++) {
+                    for (int k = 0; k < vertexToIndex.size(); k++) {
                         if (hasEdge(j, k)) {
-                            squareGraph.addEdge((V) indexToVertex[i], (V) indexToVertex[k]);
+                            squareGraph.addEdge((V) indexToVertex.get(i), (V) indexToVertex.get(k));
                         }
                     }
                 }
@@ -125,12 +124,12 @@ public class NonWeightedAdjacencyMatrixGraph<V> implements IDirectedGraphAlgorit
     public boolean hasUniversalSink() {
         int i = 0;
         int j = 1;
-        while (j < vertexToIndexMap.size()) {
+        while (j < vertexToIndex.size()) {
             i = hasEdge(i, j) ? j : i; // winner is the target which probably is sinker
             j = j + 1; // next
         }
         int winner = i;
-        for (int k = 0; k < vertexToIndexMap.size(); k++) {
+        for (int k = 0; k < vertexToIndex.size(); k++) {
             if (winner != k && (adjacencyMatrix[k][winner] == 0 || adjacencyMatrix[winner][k] > 0)) {
                 return false; // real sinker should be all vertices' target and should not be anyone's source
             }
@@ -142,4 +141,12 @@ public class NonWeightedAdjacencyMatrixGraph<V> implements IDirectedGraphAlgorit
         return adjacencyMatrix[sourceIndex][targetIndex] > 0;
     }
 
+    @Override
+    protected void forEachAdjacentVertex(int uIndex, Consumer<Integer> adjacentVertexConsumer) {
+        for (int i = 0 ; i < getVertexCount(); i ++) {
+            if (adjacencyMatrix[uIndex][i] > 0) {
+                adjacentVertexConsumer.accept(i);
+            }
+        }
+    }
 }
