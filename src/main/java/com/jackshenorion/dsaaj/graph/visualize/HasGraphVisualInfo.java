@@ -10,5 +10,5 @@ public interface HasGraphVisualInfo<V> {
     List<V> getAllVertices();
     Collection<IEdgeByIndex> getAllEdges();
     int[] getVertexColors();
-    Map<Integer, int[]> getEdgesByType();
+    Map<Integer, List<IEdgeByIndex>> getEdgesByType();
 }

@@ -1,26 +1,24 @@
 package com.jackshenorion.dsaaj.graph.visualize;
 
-public enum VertexColor {
-    WHITE(0, "whiteVertex"), GREY(1, "greyVertex"), BLACK(2, "blackVertex");
+public enum EdgeType {
+    DEFAULT(0, "defEdge"),ON_TREE(1, "boldEdge");
 
     private int code;
     private String styleName;
 
-    VertexColor(int code, String styleName) {
+    EdgeType(int code, String styleName) {
         this.code = code;
         this.styleName = styleName;
     }
 
-    public static VertexColor fromCode(int code) {
+    public static EdgeType fromCode(int code) {
         switch (code) {
             case 0:
-                return WHITE;
+                return DEFAULT;
             case 1:
-                return GREY;
-            case 2:
-                return BLACK;
+                return ON_TREE;
             default:
-                return WHITE;
+                return DEFAULT;
         }
     }
 

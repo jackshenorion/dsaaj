@@ -3,6 +3,7 @@ package com.jackshenorion.dsaaj.graph.visualize;
 import com.jackshenorion.dsaaj.circle.CircleCoordinateProvider;
 import com.jackshenorion.dsaaj.circle.Coordinate;
 import com.jackshenorion.dsaaj.graph.intf.IEdgeByIndex;
+import com.mxgraph.model.mxCell;
 import com.mxgraph.swing.mxGraphComponent;
 import com.mxgraph.util.mxConstants;
 import com.mxgraph.view.mxGraph;
@@ -13,6 +14,8 @@ import java.awt.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
+import java.util.function.Consumer;
 
 public class GraphVisualizer<V> extends JFrame {
 
@@ -25,6 +28,7 @@ public class GraphVisualizer<V> extends JFrame {
 
     private HasGraphVisualInfo<V> graphVisualInfo;
     private mxGraph graph = new mxGraph();
+    Map<Integer, Object> vertexToCell = new HashMap<>();
 
     public GraphVisualizer(HasGraphVisualInfo<V> initialGraphData) throws HeadlessException {
         super("Graph Shower");
@@ -32,12 +36,39 @@ public class GraphVisualizer<V> extends JFrame {
         init();
     }
 
+    public void onGraphChange(HasGraphVisualInfo<V> graphVisualInfo) {
+        graph.getModel().beginUpdate();
+        createStyle();
+        try {
+            int[] colors = graphVisualInfo.getVertexColors();
+            for (int i = 0; i < colors.length; i++) {
+                ((mxCell) vertexToCell.get(i)).setStyle(VertexColor.fromCode(colors[i]).getStyleName());
+            }
+
+            Map<Integer, List<IEdgeByIndex>> edgesByType = graphVisualInfo.getEdgesByType();
+            for (Integer type : edgesByType.keySet()) {
+                for (IEdgeByIndex edge : edgesByType.get(type)) {
+                    Object[] edgeCells = graph.getEdgesBetween(vertexToCell.get(edge.getSource()), vertexToCell.get(edge.getTarget()));
+                    for (Object edgeCell : edgeCells) {
+                        ((mxCell) edgeCell).setStyle(EdgeType.fromCode(type).getStyleName());
+                    }
+                }
+            }
+
+            TimeUnit.SECONDS.sleep(1);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } finally {
+            graph.getModel().endUpdate();
+            graph.refresh();
+        }
+    }
+
     private void init() {
         Object parent = graph.getDefaultParent();
         graph.getModel().beginUpdate();
         createStyle();
         try {
-            Map<Integer, Object> vertexToCell = new HashMap<>();
             List<V> vertices = graphVisualInfo.getAllVertices();
             List<Coordinate> coordinateList = CircleCoordinateProvider.getCoordinates(vertices.size(), Math.max(itemHeight, itemWidth));
             int seq = 0;
@@ -109,9 +140,10 @@ public class GraphVisualizer<V> extends JFrame {
         stylesheet.putCellStyle("directedEdge", directedEdge);
     }
 
-    public void doShow() {
+    public void run(Consumer<Void> action) {
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setSize(maxX + itemWidth + offsetX, maxY + itemHeight + offsetY);
         setVisible(true);
+        action.accept(null);
     }
 }
