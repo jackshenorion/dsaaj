@@ -1,10 +1,8 @@
-package com.jackshenorion.dsaaj.graph;
+package com.jackshenorion.dsaaj.graph.visualize;
 
 import com.jackshenorion.dsaaj.circle.CircleCoordinateProvider;
 import com.jackshenorion.dsaaj.circle.Coordinate;
-import com.jackshenorion.dsaaj.graph.intf.IEdge;
-import com.jackshenorion.dsaaj.graph.intf.IGraph;
-import com.mxgraph.model.mxCell;
+import com.jackshenorion.dsaaj.graph.intf.IEdgeByIndex;
 import com.mxgraph.swing.mxGraphComponent;
 import com.mxgraph.util.mxConstants;
 import com.mxgraph.view.mxGraph;
@@ -12,26 +10,25 @@ import com.mxgraph.view.mxStylesheet;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class GraphShower<V> extends JFrame {
+public class GraphVisualizer<V> extends JFrame {
 
     private static final int itemWidth = 80;
     private static final int itemHeight = 30;
     private static final int offsetX = itemWidth;
     private static final int offsetY = itemHeight;
-
-    private IGraph<V> graphData;
     private int maxX = 400;
     private int maxY = 320;
+
+    private HasGraphVisualInfo<V> graphVisualInfo;
     private mxGraph graph = new mxGraph();
 
-    public GraphShower(IGraph<V> graphData) throws HeadlessException {
+    public GraphVisualizer(HasGraphVisualInfo<V> initialGraphData) throws HeadlessException {
         super("Graph Shower");
-        this.graphData = graphData;
+        this.graphVisualInfo = initialGraphData;
         init();
     }
 
@@ -40,37 +37,22 @@ public class GraphShower<V> extends JFrame {
         graph.getModel().beginUpdate();
         createStyle();
         try {
-            Map<V, Object> vertexToCell = new HashMap<>();
-            Collection<V> vertices = graphData.getAllVertexes();
+            Map<Integer, Object> vertexToCell = new HashMap<>();
+            List<V> vertices = graphVisualInfo.getAllVertices();
             List<Coordinate> coordinateList = CircleCoordinateProvider.getCoordinates(vertices.size(), Math.max(itemHeight, itemWidth));
             int seq = 0;
-            for (V v : vertices) {
+            for (int i = 0; i < vertices.size(); i++) {
                 int thisX = (int) Math.round(coordinateList.get(seq).getX()) + offsetX;
                 int thisY = (int) Math.round(coordinateList.get(seq).getY()) + offsetY;
                 maxX = Math.max(thisX, maxX);
                 maxY = Math.max(thisY, maxY);
-                Object cell = graph.insertVertex(parent, null, v, thisX, thisY, itemWidth, itemHeight);
-                if (seq % 3 == 0) {
-                    ((mxCell) cell).setStyle("whiteVertex");
-                } else if (seq % 3 == 1) {
-                    ((mxCell) cell).setStyle("greyVertex");
-                } else {
-                    ((mxCell) cell).setStyle("blackVertex");
-                }
-                vertexToCell.put(v, cell);
+                Object cell = graph.insertVertex(parent, null, vertices.get(i), thisX, thisY, itemWidth, itemHeight, VertexColor.WHITE.getStyleName());
+                vertexToCell.put(i, cell);
                 seq++;
             }
 
-            int edgeSeq = 0;
-            for (IEdge<V> edge : graphData.getAllEdges()) {
-                if (edgeSeq % 3 == 0) {
-                    graph.insertEdge(parent, null, edge.getWeight(), vertexToCell.get(edge.getSource()), vertexToCell.get(edge.getTarget()), "defEdge;directedEdge");
-                } else if (edgeSeq % 3 == 1) {
-                    graph.insertEdge(parent, null, edge.getWeight(), vertexToCell.get(edge.getSource()), vertexToCell.get(edge.getTarget()), "dashEdge;undirectedEdge");
-                } else {
-                    graph.insertEdge(parent, null, edge.getWeight(), vertexToCell.get(edge.getSource()), vertexToCell.get(edge.getTarget()), "boldEdge;directedEdge");
-                }
-                edgeSeq++;
+            for (IEdgeByIndex edge : graphVisualInfo.getAllEdges()) {
+                graph.insertEdge(parent, null, edge.getWeight(), vertexToCell.get(edge.getSource()), vertexToCell.get(edge.getTarget()), "defEdge;directedEdge");
             }
         } finally {
             graph.getModel().endUpdate();

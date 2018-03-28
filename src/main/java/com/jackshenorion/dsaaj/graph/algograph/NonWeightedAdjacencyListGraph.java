@@ -2,13 +2,12 @@ package com.jackshenorion.dsaaj.graph.algograph;
 
 import com.jackshenorion.dsaaj.graph.edge.DefaultEdge;
 import com.jackshenorion.dsaaj.graph.intf.IEdge;
-import com.jackshenorion.dsaaj.graph.intf.IGraph;
 
 import java.util.*;
 import java.util.function.Consumer;
 
 public class NonWeightedAdjacencyListGraph<V>
-        extends AbstractGraphAlgorithm<V>
+        extends AbstractAlgoGraph<V>
         implements IDirectedGraphAlgorithm<V> {
 
     private static final int DEFAULT_ADJACENCY_LIST_LEN = 1;

@@ -18,7 +18,7 @@ public class AbstractGraphAlgorithmTest {
         testGraphBFS(graph1);
     }
 
-    private void testGraphBFS(AbstractGraphAlgorithm<String> graph) {
+    private void testGraphBFS(AbstractAlgoGraph<String> graph) {
         String v1 = "A";
         String v2 = "B";
         String v3 = "C";

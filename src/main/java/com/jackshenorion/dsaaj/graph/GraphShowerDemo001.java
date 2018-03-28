@@ -1,6 +1,7 @@
 package com.jackshenorion.dsaaj.graph;
 
 import com.jackshenorion.dsaaj.graph.algograph.NonWeightedAdjacencyListGraph;
+import com.jackshenorion.dsaaj.graph.visualize.GraphVisualizer;
 
 public class GraphShowerDemo001 {
 
@@ -17,6 +18,6 @@ public class GraphShowerDemo001 {
         graph.addEdge(v2, v1);
         graph.addEdge(v3, v2);
 
-        new GraphShower<>(graph).doShow();
+        new GraphVisualizer<>(graph.getGraphVisualInfo()).doShow();
     }
 }

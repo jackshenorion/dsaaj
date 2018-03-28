@@ -7,7 +7,7 @@ import java.util.*;
 import java.util.function.Consumer;
 
 public class NonWeightedAdjacencyMatrixGraph<V>
-        extends AbstractGraphAlgorithm<V>
+        extends AbstractAlgoGraph<V>
         implements IDirectedGraphAlgorithm<V> {
 
     private int[][] adjacencyMatrix;

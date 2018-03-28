@@ -1,17 +1,20 @@
 package com.jackshenorion.dsaaj.graph.algograph;
 
+import com.jackshenorion.dsaaj.graph.edge.DefaultEdgeByIndex;
+import com.jackshenorion.dsaaj.graph.intf.IEdgeByIndex;
 import com.jackshenorion.dsaaj.graph.intf.IGraph;
+import com.jackshenorion.dsaaj.graph.visualize.HasGraphVisualInfo;
 
 import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
-public abstract class AbstractGraphAlgorithm<V> implements IGraph<V> {
+public abstract class AbstractAlgoGraph<V> implements IGraph<V> {
 
     protected List<V> indexToVertex;
     protected Map<V, Integer> vertexToIndex;
 
-    public AbstractGraphAlgorithm() {
+    public AbstractAlgoGraph() {
         indexToVertex = new ArrayList<>();
         vertexToIndex = new HashMap<>();
     }
@@ -58,6 +61,36 @@ public abstract class AbstractGraphAlgorithm<V> implements IGraph<V> {
             colors[uIndex] = 2;
         }
         return new GraphTraverseInfo(colors, parents, distances);
+    }
+
+    public HasGraphVisualInfo<V> getGraphVisualInfo() {
+
+        return new HasGraphVisualInfo<V>() {
+            @Override
+            public List<V> getAllVertices() {
+                return new ArrayList<>(indexToVertex);
+            }
+
+            @Override
+            public Collection<IEdgeByIndex> getAllEdges() {
+                List<IEdgeByIndex> edges = new ArrayList<>();
+                for (int u = 0; u < getVertexCount(); u++) {
+                    int finalU = u;
+                    forEachAdjacentVertex(u, v -> edges.add(new DefaultEdgeByIndex(finalU, v)));
+                }
+                return edges;
+            }
+
+            @Override
+            public int[] getVertexColors() {
+                return new int[getVertexCount()];
+            }
+
+            @Override
+            public Map<Integer, int[]> getEdgesByType() {
+                return Collections.EMPTY_MAP;
+            }
+        };
     }
 
     abstract protected void forEachAdjacentVertex(int uIndex, Consumer<Integer> adjacentVertexConsumer);
